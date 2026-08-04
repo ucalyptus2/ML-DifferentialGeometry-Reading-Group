@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>06_geometric_deep_learning_blueprint</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="../tutorial.css" />
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<nav class="site-nav"><a href="../">← Reading group home</a> · <a href="../#tutorial">Tutorial index</a></nav>
+<h1 id="06--the-geometric-deep-learning-blueprint">06 — The geometric
+deep learning blueprint</h1>
+<h2 id="one-blueprint-to-rule-them-all">One blueprint to rule them
+all</h2>
+<p>The two <strong>geometric deep learning</strong> survey papers
+(Bronstein et al. 2017, 2021) make a powerful point: <strong>almost
+every deep network is a special case of one blueprint</strong>. A layer
+on a space <span class="math inline">\(X\)</span> acts on <em>feature
+fields</em> over <span class="math inline">\(X\)</span> and is built
+from just two operations:</p>
+<blockquote>
+<p><strong>Local &amp; geometric aggregation</strong> $\ \mathcal{P}\ $
+— combine features from a neighbourhood,</p>
+<p><strong>Equivariant nonlinearity</strong> $\ \psi\ $ — a pointwise
+map that respects the symmetry.</p>
+</blockquote>
+<p>For grids: <span class="math inline">\(\mathcal{P}\)</span> =
+convolution on <span class="math inline">\(\mathbb{Z}^2\)</span>. For
+groups: convolution on <span class="math inline">\(G\)</span>. For
+graphs: message passing on edges. For geodesic/manifold data:
+aggregation along geodesic patches. For gauge-equivariant models:
+aggregation with <em>parallel transport</em> to align local frames.</p>
+<h2
+id="the-1-categorical-vs-2-categorical-distinction-bronstein-et-al-2021">The
+1-categorical vs 2-categorical distinction (Bronstein et al. 2021)</h2>
+<p>This is the <em>single most important conceptual idea in the whole
+reading list</em>:</p>
+<ul>
+<li><strong>1-categorical</strong> tasks: the feature is a
+<strong>scalar field</strong> (or a group representation) and you can
+aggregate neighbours <em>without</em> comparing local frames.
+Translation-equivariant CNNs, GCNs, hyperbolic models — these only need
+the neighbouring relation <span class="math inline">\(\to\)</span> and a
+symmetric aggregator.</li>
+<li><strong>2-categorical</strong> tasks: features are
+<strong>vectors/tensors</strong> whose orientation matters (e.g. surface
+normals on a sphere). To add two vectors at different points you must
+first <strong>transport</strong> one to the other along a path. This
+requires a <strong>connection</strong> and <strong>parallel
+transport</strong> — the <em>gauge-equivariant</em> setting.</li>
+</ul>
+<p>That is precisely why <strong>gauge-equivariant mesh CNNs</strong>
+(de Haan et al.) and <strong>Gauge CNNs</strong> (Cohen et al.) talk
+about principal <span class="math inline">\(G\)</span>-bundles,
+connections, and parallel transport: they are the architectures that
+handle <em>non-kinematic</em> (vector/tensor) fields correctly.</p>
+<h2 id="the-blueprint-in-equations">The blueprint in equations</h2>
+<p>For a <span class="math inline">\(G\)</span>-structure with structure
+group <span class="math inline">\(G\)</span> (gauge):</p>
+<pre><code>feature fields  f : X -&gt; V        (V = a rep. of G)
+neighbour aggregate  P:  (f(x), {f(y)}_{y~x}) -&gt; sum over transported neighbours
+   parallel transport  tau_{x&lt;-y} : T_y X -&gt; T_x X   (the &quot;connection&quot;)
+gauge-equivariant conv:
+   (P*f)(x) = sum_{y~x}  rho( tau_{x&lt;-y} ) f(y)      (rho = the G-representation)</code></pre>
+<h2 id="how-each-folder-instantiates-the-blueprint">How each folder
+instantiates the blueprint</h2>
+<table>
+<thead>
+<tr>
+<th>Folder</th>
+<th>Space <span class="math inline">\(X\)</span></th>
+<th>Aggregator <span class="math inline">\(\mathcal{P}\)</span></th>
+<th>Equivariance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>group_equivariance</code></td>
+<td><span class="math inline">\(\mathbb{Z}^2\)</span>, <span
+class="math inline">\(S^2\)</span>, point clouds</td>
+<td><span class="math inline">\(G\)</span>-conv / spherical-harmonic
+conv / distance message passing</td>
+<td><span class="math inline">\(G\)</span>, <span
+class="math inline">\(SO(3)\)</span>, <span
+class="math inline">\(E(n)\)</span></td>
+</tr>
+<tr>
+<td><code>gauge</code></td>
+<td>surfaces &amp; meshes</td>
+<td>gauge conv + parallel transport</td>
+<td>gauge group <span class="math inline">\(G\)</span></td>
+</tr>
+<tr>
+<td><code>geodesics_shape</code></td>
+<td>Riemannian manifolds/meshes</td>
+<td>geodesic polar patches / surface diffusion</td>
+<td>isometries</td>
+</tr>
+<tr>
+<td><code>hyperbolic</code></td>
+<td>Poincaré ball</td>
+<td>Möbius/gyrovector ops, tangent aggregation</td>
+<td>Möbius isometries</td>
+</tr>
+<tr>
+<td><code>spd_riemannian</code>, <code>flows_odes</code>,
+<code>diffusion_manifolds</code></td>
+<td>curved optim/manifolds</td>
+<td>retractions, exp·log, Riemannian BM</td>
+<td>manifold isometries</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tldr">TL;DR</h2>
+<blockquote>
+<p><strong>Learn to spot the two operations (aggregate + symmetric
+nonlinearity) in every paper.</strong> Then figure out which
+<em>space</em> and which <em>symmetry</em> the authors used — the whole
+geometric-deep- learning literature becomes a catalogue of that
+blueprint on different geometries.</p>
+</blockquote>
+<hr />
+<p><strong>Start the papers:</strong> browse <a
+href="https://github.com/ucalyptus2/ML-DifferentialGeometry-Reading-Group/tree/master/papers"><code>papers/</code></a> — foundation papers first.</p>
+</body>
+</html>

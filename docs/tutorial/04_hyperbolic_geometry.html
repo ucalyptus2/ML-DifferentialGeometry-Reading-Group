@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>04_hyperbolic_geometry</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="../tutorial.css" />
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<nav class="site-nav"><a href="../">← Reading group home</a> · <a href="../#tutorial">Tutorial index</a></nav>
+<h1 id="04--hyperbolic-geometry-the-poincaré-ball">04 — Hyperbolic
+geometry (the Poincaré ball)</h1>
+<h2 id="the-idea">The idea</h2>
+<p>Hyperbolic space is a complete, simply-connected Riemannian manifold
+of <strong>constant negative curvature</strong> <span
+class="math inline">\(-\kappa\)</span>. Its volume grows
+<em>exponentially</em> with radius — exactly like a tree grows: a binary
+tree of depth <span class="math inline">\(d\)</span> has <span
+class="math inline">\(2^d\)</span> nodes but "fits" with <span
+class="math inline">\(O(\log)\)</span> distances in hyperbolic space.
+This is why <strong>hierarchical / tree-structured data</strong> can be
+embedded with tiny distortion, whereas flat (Euclidean) space needs
+exponentially many dimensions.</p>
+<h2 id="the-poincaré-ball-model">The Poincaré ball model</h2>
+<p>The Poincaré ball is the disk <span
+class="math display">\[\mathbb{B}^n_\kappa = \{ x \in \mathbb{R}^n :
+\kappa\|x\|^2 &lt; 1 \}\]</span> with the Riemannian metric <span
+class="math display">\[g_x = \lambda^2_x\, I,\qquad \lambda_x =
+\frac{2}{1-\kappa\|x\|^2}.\]</span> (The conformal factor <span
+class="math inline">\(\lambda_x\)</span> grows toward the boundary —
+distances stretch there.)</p>
+<p><strong>Geodesic distance</strong> <span
+class="math display">\[d_\kappa(x,y) =
+\frac{1}{\sqrt\kappa}\operatorname{arcosh}\!\Big(1 +
+\frac{2\kappa\|x-y\|^2}{(1-\kappa\|x\|^2)(1-\kappa\|y\|^2)}\Big).\]</span></p>
+<p><strong>Möbius addition</strong> (the group operation making the ball
+a gyrogroup): <span class="math display">\[x \oplus_\kappa y =
+\frac{(1+2\kappa\langle x,y\rangle+\kappa\|y\|^2)\,x +
+(1-\kappa\|x\|^2)\,y}{1+2\kappa\langle
+x,y\rangle+\kappa^2\|x\|^2\|y\|^2}.\]</span></p>
+<h2 id="what-the-papers-do-with-it">What the papers do with it</h2>
+<table>
+<thead>
+<tr>
+<th>Paper</th>
+<th>Idea</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Poincaré Embeddings</strong> (Nickel &amp; Kiela 2017)</td>
+<td>Learn embeddings of a hierarchy by minimizing Poincaré distance
+between related nodes; loss pushes unrelated nodes apart</td>
+</tr>
+<tr>
+<td><strong>Hyperbolic Neural Networks</strong> (Ganea et al. 2018)</td>
+<td>Do matrix-vector operations <strong>inside</strong> the ball using
+Möbius gyrovector spaces (analog of neurons)</td>
+</tr>
+<tr>
+<td><strong>Hyperbolic GCN</strong> (Chami et al. 2019)</td>
+<td>Aggregate in tangent space (Euclidean), then map back with the
+exponential map + project to the ball</td>
+</tr>
+<tr>
+<td><strong>Hyperbolic Entailment Cones</strong> (Ganea et al.
+2018)</td>
+<td>Model a partial order: encode <span class="math inline">\(u \preceq
+v\)</span> as "cone of <span class="math inline">\(u\)</span> inside
+cone of <span class="math inline">\(v\)</span>"</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-two-extremes-worth-internalizing">The two "extremes" worth
+internalizing</h2>
+<pre><code>flat space:   circle grows ~ O(r)     -&gt; balanced trees are squeezed
+hyperbolic:   circle grows ~ O(e^r)   -&gt; trees &quot;fit naturally&quot;</code></pre>
+<h2 id="code">Code</h2>
+<p><code>tutorial/code/riemannian_pytorch.py</code> implements
+<code>poincare_dist</code> and <code>poincare_exp</code>; verify that
+the distance grows dramatically as points approach the boundary:</p>
+<pre><code>d(a, -a)  = 0.564   # both near origin
+d(far,-far)= 6.579  # both near boundary  -&gt; hyperbolic stretching</code></pre>
+<p>Full hyperbolic implementations are in
+<code>papers/hyperbolic/*/code/</code>.</p>
+<hr />
+<p><strong>Next:</strong> <a href="05_matrix_manifolds_spd.html">05 —
+Matrix manifolds: SPD &amp; retractions</a></p>
+</body>
+</html>

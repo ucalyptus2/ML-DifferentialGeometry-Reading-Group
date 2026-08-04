@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>03_groups_equivariance</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="../tutorial.css" />
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<nav class="site-nav"><a href="../">← Reading group home</a> · <a href="../#tutorial">Tutorial index</a></nav>
+<h1 id="03--groups--equivariance">03 — Groups &amp; equivariance</h1>
+<h2 id="groups-and-group-actions">Groups and group actions</h2>
+<p>A <strong>group</strong> <span class="math inline">\((G,
+\cdot)\)</span> is a set with an associative operation, an identity
+<span class="math inline">\(e\)</span>, and inverses. It
+<strong>acts</strong> on a set/space <span
+class="math inline">\(X\)</span> via <span class="math display">\[\rho:
+G \to \operatorname{Aut}(X),\qquad (g,h)\mapsto
+\rho(g)\circ\rho(h)=\rho(gh).\]</span></p>
+<p>Real examples:</p>
+<ul>
+<li>the <strong>translation group</strong> <span
+class="math inline">\(\mathbb{R}^2\)</span> and <strong>rotation
+group</strong> <span class="math inline">\(SO(2)\)</span> acting on the
+plane,</li>
+<li>the <strong>p4</strong> group (rotations by <span
+class="math inline">\(90^\circ\)</span> + translations) acting on <span
+class="math inline">\(\mathbb{Z}^2\)</span> grids,</li>
+<li>the <strong>E(n) group</strong> (rotations/reflections <span
+class="math inline">\(O(n)\)</span>, translations, permutations) acting
+on point clouds,</li>
+<li><span class="math inline">\(SO(3)\)</span> acting on the sphere
+<span class="math inline">\(S^2\)</span> and on 3D objects.</li>
+</ul>
+<p>A smooth group is a <strong>Lie group</strong>; its tangent space at
+the identity is the <strong>Lie algebra</strong> <span
+class="math inline">\(\mathfrak{g}\)</span> (e.g. skew-symmetric
+matrices for <span class="math inline">\(SO(n)\)</span>). The
+exponential map <span class="math inline">\(\exp:\mathfrak{g}\to
+G\)</span> bridges them — precisely what the tutorial code uses for the
+rotation group.</p>
+<h2 id="equivariance">Equivariance</h2>
+<p>A function <span class="math inline">\(f: X \to Y\)</span> is
+<strong><span class="math inline">\(G\)</span>-equivariant</strong> if,
+for a group action <span class="math inline">\(\rho_X\)</span> on <span
+class="math inline">\(X\)</span> and <span
+class="math inline">\(\rho_Y\)</span> on <span
+class="math inline">\(Y\)</span>, <span
+class="math display">\[f(\rho_X(g)\, x) = \rho_Y(g)\, f(x).\]</span> It
+is <strong><span class="math inline">\(G\)</span>-invariant</strong>
+when <span class="math inline">\(\rho_Y\)</span> is trivial, i.e. <span
+class="math inline">\(f(\rho_X(g)x)=f(x)\)</span>.</p>
+<h3 id="example-a-rotation-equivariant-90-filter">Example: a
+rotation-equivariant 90° filter</h3>
+<p>If we rotate the input image by <span
+class="math inline">\(g\)</span> and the network's first layer by <span
+class="math inline">\(g\)</span>, and outputs match after <span
+class="math inline">\(g\)</span>, the layer is equivariant.
+Group-equivariant CNNs <strong>lift</strong> the input to the group
+<span class="math inline">\(\mathbb{R}^2 \rtimes G\)</span> and convolve
+there.</p>
+<h2 id="why-this-matters-for-ml">Why this matters for ML</h2>
+<ul>
+<li><strong>Data efficiency &amp; generalization</strong>: an
+equivariant net never has to <em>learn</em> a symmetry; it gets it for
+free, so it sees far fewer effective examples.</li>
+<li><strong>Correct inductive bias</strong>: for 3D/data on spheres or
+point clouds, invariance under <span
+class="math inline">\(E(n)\)</span>, <span
+class="math inline">\(SO(3)\)</span>, or <span
+class="math inline">\(O(3)\)</span> is physically correct.</li>
+</ul>
+<h2 id="the-geometric-deep-learning-blueprint-in-one-line">The
+geometric-deep-learning "blueprint" in one line</h2>
+<p>Every geometric architecture is built from two operations on feature
+fields over a space <span class="math inline">\(X\)</span>:</p>
+<blockquote>
+<ol type="1">
+<li><strong>Local aggregation</strong> (neighbourhood pooling <span
+class="math inline">\(\mathcal{P}\)</span>)</li>
+<li><strong>Nonlinearity / equivariant map</strong> <span
+class="math inline">\(\psi\)</span> (a symmetric function)</li>
+</ol>
+</blockquote>
+<p>This is exactly the formulation in the <strong>bronstein2017</strong>
+and <strong>bronstein2021</strong> papers.</p>
+<h2 id="code-reference">Code reference</h2>
+<p>See <code>papers/group_equivariance/cohen2016_group/code/</code>
+(implemented by the reading-group build) for a working <code>p4</code>
+group convolution.</p>
+<hr />
+<p><strong>Next:</strong> <a href="04_hyperbolic_geometry.html">04 —
+Hyperbolic geometry (the Poincaré ball)</a></p>
+</body>
+</html>
