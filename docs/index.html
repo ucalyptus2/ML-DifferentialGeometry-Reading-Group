@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ML × Differential Geometry — Reading Group</title>
+<meta name="description" content="Papers, code, and a full tutorial at the intersection of Machine Learning and Differential Geometry.">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9aa7b4;--acc:#58a6ff;--acc2:#bc8cff;--card:#161b22;--border:#30363d;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--fg);line-height:1.6}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px}
+  header{padding:56px 0 24px}
+  .kicker{color:var(--acc);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:13px}
+  h1{font-size:40px;line-height:1.15;margin:8px 0}
+  h2{font-size:24px;border-bottom:1px solid var(--border);padding-bottom:8px;margin-top:44px}
+  .sub{color:var(--muted);font-size:18px;max-width:720px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+  .card h3{margin:0 0 6px;font-size:16px;color:var(--acc2)}
+  .card p{margin:0;color:var(--muted);font-size:14px}
+  a{color:var(--acc);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .btn{display:inline-block;background:#238636;color:#fff;border-radius:8px;padding:10px 16px;font-weight:600;margin:6px 6px 6px 0}
+  .btn.alt{background:#1f6feb}
+  ul.papers{list-style:none;padding:0;margin:0}
+  ul.papers li{padding:12px 0;border-bottom:1px solid var(--border)}
+  ul.papers .t{font-size:16px}
+  ul.papers .m{color:var(--muted);font-size:13px}
+  footer{color:var(--muted);font-size:13px;margin-top:56px;border-top:1px solid var(--border);padding:20px 0}
+  code{background:#21262d;border-radius:4px;padding:1px 5px;font-size:.92em}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Reading Group · Open Source</div>
+  <h1>ML × Differential Geometry</h1>
+  <p class="sub">Machine learning <em>on</em> and <em>with</em> curved spaces — landmark papers,
+  runnable PyTorch/JAX code, and a full tutorial. Zero-code version of the <a href="https://github.com/ucalyptus2/ML-DifferentialGeometry-Reading-Group">GitHub repo</a>.</p>
+  <p>
+    <a class="btn" href="#papers">Read the papers</a>
+    <a class="btn alt" href="#tutorial">Start the tutorial</a>
+  </p>
+</header>
+
+<section>
+  <h2>The big ideas</h2>
+  <div class="grid">
+    <div class="card"><h3>Manifolds</h3><p>Data (poses, covariances, shapes, hierarchies) lives on curved spaces, not flat ℝⁿ.</p></div>
+    <div class="card"><h3>Tangent spaces</h3><p>Every update vector &amp; gradient lives in TₓM — the linear window onto the manifold.</p></div>
+    <div class="card"><h3>Geodesics &amp; exp/log</h3><p>Shortest paths and local coordinates; the heart of Riemannian optimization.</p></div>
+    <div class="card"><h3>Groups &amp; equivariance</h3><p>f(g·x)=g·f(x): build invariance to rotation, reflection, translation, E(n).</p></div>
+    <div class="card"><h3>Gauges &amp; transport</h3><p>Align local frames with connections to handle vector/tensor fields correctly.</p></div>
+    <div class="card"><h3>Curvature</h3><p>Hyperbolic (−κ) fits trees; spherical (+κ) fits rotations. Geometry is a design choice.</p></div>
+  </div>
+</section>
+<section id="papers">
+  <h2>The reading list · 22 papers</h2>
+
+  <h3>0 · Foundations &amp; the blueprint</h3>
+  <ul class="papers">
+    <li><div class="t">Geometric deep learning: going beyond Euclidean data — <i>Bronstein et al., 2017</i></div><div class="m"><a href="https://arxiv.org/abs/1611.08097">arXiv:1611.08097</a></div></li>
+    <li><div class="t">Geometric Deep Learning: Grids, Groups, Graphs, Geodesics, and Gauges — <i>Bronstein et al., 2021</i></div><div class="m"><a href="https://arxiv.org/abs/2104.13478">arXiv:2104.13478</a></div></li>
+  </ul>
+
+  <h3>1 · Group- &amp; gauge-equivariant networks</h3>
+  <ul class="papers">
+    <li><div class="t">Group Equivariant Convolutional Networks — <i>Cohen &amp; Welling, 2016</i></div><div class="m"><a href="https://arxiv.org/abs/1602.07576">arXiv:1602.07576</a></div></li>
+    <li><div class="t">Spherical CNNs — <i>Cohen et al., 2018</i></div><div class="m"><a href="https://arxiv.org/abs/1801.10130">arXiv:1801.10130</a></div></li>
+    <li><div class="t">E(n) Equivariant Graph Neural Networks — <i>Satorras et al., 2021</i></div><div class="m"><a href="https://arxiv.org/abs/2102.09844">arXiv:2102.09844</a></div></li>
+    <li><div class="t">Gauge Equivariant Convolutional Networks and the Icosahedral CNN — <i>Cohen et al., 2019</i></div><div class="m"><a href="https://arxiv.org/abs/1902.04615">arXiv:1902.04615</a></div></li>
+    <li><div class="t">Gauge Equivariant Mesh CNNs — <i>de Haan et al., 2021</i></div><div class="m"><a href="https://arxiv.org/abs/2003.05425">arXiv:2003.05425</a></div></li>
+  </ul>
+
+  <h3>2 · Geodesics &amp; shape analysis</h3>
+  <ul class="papers">
+    <li><div class="t">Geodesic convolutional neural networks on Riemannian manifolds — <i>Masci et al., 2015</i></div><div class="m"><a href="https://arxiv.org/abs/1501.06297">arXiv:1501.06297</a></div></li>
+    <li><div class="t">Surface Networks — <i>Kostrikov et al., 2018</i></div><div class="m"><a href="https://arxiv.org/abs/1705.10819">arXiv:1705.10819</a></div></li>
+  </ul>
+
+  <h3>3 · Hyperbolic geometry &amp; embeddings</h3>
+  <ul class="papers">
+    <li><div class="t">Poincaré Embeddings — <i>Nickel &amp; Kiela, 2017</i></div><div class="m"><a href="https://arxiv.org/abs/1705.08039">arXiv:1705.08039</a></div></li>
+    <li><div class="t">Hyperbolic Neural Networks — <i>Ganea et al., 2018</i></div><div class="m"><a href="https://arxiv.org/abs/1805.09112">arXiv:1805.09112</a></div></li>
+    <li><div class="t">Hyperbolic Graph Convolutional Neural Networks — <i>Chami et al., 2019</i></div><div class="m"><a href="https://arxiv.org/abs/1910.12933">arXiv:1910.12933</a></div></li>
+    <li><div class="t">Hyperbolic Entailment Cones — <i>Ganea et al., 2018</i></div><div class="m"><a href="https://arxiv.org/abs/1804.01882">arXiv:1804.01882</a></div></li>
+  </ul>
+
+  <h3>4 · Riemannian optimization &amp; SPD manifolds</h3>
+  <ul class="papers">
+    <li><div class="t">A Riemannian Network for SPD Matrix Learning — <i>Huang &amp; Van Gool, 2017</i></div><div class="m"><a href="https://arxiv.org/abs/1608.04233">arXiv:1608.04233</a></div></li>
+    <li><div class="t">Riemannian Adaptive Optimization Methods — <i>Bécigneul &amp; Ganea, 2019</i></div><div class="m"><a href="https://arxiv.org/abs/1810.00760">arXiv:1810.00760</a></div></li>
+  </ul>
+
+  <h3>5 · Flows, ODEs &amp; diffusion on manifolds</h3>
+  <ul class="papers">
+    <li><div class="t">Neural Ordinary Differential Equations — <i>Chen et al., 2018</i></div><div class="m"><a href="https://arxiv.org/abs/1806.07366">arXiv:1806.07366</a></div></li>
+    <li><div class="t">FFJORD — <i>Grathwohl et al., 2019</i></div><div class="m"><a href="https://arxiv.org/abs/1810.01367">arXiv:1810.01367</a></div></li>
+    <li><div class="t">Continuous Normalizing Flows on Manifolds — <i>Falorsi, 2021</i></div><div class="m"><a href="https://arxiv.org/abs/2104.14959">arXiv:2104.14959</a></div></li>
+    <li><div class="t">E(n) Equivariant Normalizing Flows — <i>Satorras et al., 2021</i></div><div class="m"><a href="https://arxiv.org/abs/2105.09016">arXiv:2105.09016</a></div></li>
+    <li><div class="t">Riemannian Score-Based Generative Modelling — <i>De Bortoli et al., 2022</i></div><div class="m"><a href="https://arxiv.org/abs/2202.02763">arXiv:2202.02763</a></div></li>
+  </ul>
+
+  <h3>6 · Optimal transport &amp; information geometry</h3>
+  <ul class="papers">
+    <li><div class="t">Sinkhorn Distances — <i>Cuturi, 2013</i></div><div class="m"><a href="https://arxiv.org/abs/1306.0895">arXiv:1306.0895</a></div></li>
+    <li><div class="t">Geometric GAN — <i>Lim et al., 2017</i></div><div class="m"><a href="https://arxiv.org/abs/1705.02894">arXiv:1705.02894</a></div></li>
+  </ul>
+  <p>Every paper has a <code>paper.md</code> (summary + math + reading questions) and a <code>code/</code> folder (runnable PyTorch/JAX core) in the <a href="https://github.com/ucalyptus2/ML-DifferentialGeometry-Reading-Group/tree/master/papers">repo</a>.</p>
+</section>
+
+<section id="tutorial">
+  <h2>The tutorial</h2>
+  <ul class="papers">
+    <li><div class="t">00 · Why geometry matters for ML</div></li>
+    <li><div class="t">01 · Manifolds &amp; tangent spaces</div></li>
+    <li><div class="t">02 · Riemannian metrics &amp; geodesics (exp/log)</div></li>
+    <li><div class="t">03 · Groups &amp; equivariance</div></li>
+    <li><div class="t">04 · Hyperbolic geometry (Poincaré ball)</div></li>
+    <li><div class="t">05 · Matrix manifolds: SPD &amp; retractions</div></li>
+    <li><div class="t">06 · The geometric deep learning blueprint</div></li>
+  </ul>
+  <p>Runnable code: <code>tutorial/code/riemannian_pytorch.py</code> and <code>riemannian_jax.py</code> implement sphere, Poincaré-ball, SPD, and SO(3) exp/log maps plus Riemannian gradient descent.</p>
+</section>
+
+<footer>
+  <p>MIT License · Maintained as an open reading group · <a href="https://github.com/ucalyptus2/ML-DifferentialGeometry-Reading-Group">GitHub repository</a></p>
+</footer>
+
+</div>
+</body>
+</html>
