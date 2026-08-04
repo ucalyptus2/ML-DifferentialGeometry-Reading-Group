@@ -19,8 +19,8 @@ with runnable code. It's intended as the on-ramp before diving into `papers/`.
 
 | File | Framework | Covers |
 |---|---|---|
-| `riemannian_pytorch.py` | PyTorch | sphere + Poincaré + SPD + SO(3) exp/log; Riemannian GD on the sphere |
-| `riemannian_jax.py` | JAX | same core in JAX (`pip install jax`) |
+| `riemannian_pytorch.py` | PyTorch | sphere + Poincaré + SPD + SO(3) exp/log; Riemannian GD; SPD retraction check; sphere holonomy/curvature demo |
+| `riemannian_jax.py` | JAX | same core in JAX (`pip install jax` — not exercised in this repo's CI/dev environment, kept for readers who have JAX installed) |
 
 Run them:
 
@@ -30,6 +30,23 @@ python riemannian_pytorch.py
 # or
 python riemannian_jax.py
 ```
+
+## Notation glossary
+
+The same symbols recur across all 7 lessons — reconciled here once instead of per lesson:
+
+| Symbol | Meaning | First defined |
+|---|---|---|
+| $M$, $x \in M$ | a manifold, a point on it | 01 |
+| $T_xM$ | tangent space at $x$ (linear approx. of $M$ at $x$) | 01 |
+| $g_x(\cdot,\cdot)$ | Riemannian metric: inner product on $T_xM$ | 02 |
+| $\exp_x(v)$, $\log_x(y)$ | move along a geodesic by $v$; its inverse | 02 |
+| $K$ | sectional curvature ($+$: sphere-like, $0$: flat, $-$: hyperbolic-like) | 02 |
+| $\tau_{x\leftarrow y}$ | parallel transport, $T_yM \to T_xM$ (a connection) | 06 |
+| $\kappa$ | the Poincaré ball's curvature magnitude, $K=-\kappa$ | 01, 02, 04 |
+| $G$, $\rho$ | a (Lie) group, and its action $\rho:G\to\operatorname{Aut}(X)$ | 03 |
+| $\mathfrak{g}$ | the Lie algebra of $G$ (tangent space at the identity) | 03 |
+| $\operatorname{Retr}_x$ | a retraction: any first-order approximation of $\exp_x$ | 05 |
 
 ## How to build on this
 

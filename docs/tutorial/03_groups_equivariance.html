@@ -34,9 +34,21 @@
 \cdot)\)</span> is a set with an associative operation, an identity
 <span class="math inline">\(e\)</span>, and inverses. It
 <strong>acts</strong> on a set/space <span
-class="math inline">\(X\)</span> via <span class="math display">\[\rho:
-G \to \operatorname{Aut}(X),\qquad (g,h)\mapsto
-\rho(g)\circ\rho(h)=\rho(gh).\]</span></p>
+class="math inline">\(X\)</span> via a <strong>group
+homomorphism</strong> <span class="math display">\[\rho: G \to
+\operatorname{Aut}(X)\]</span> into the automorphisms (invertible
+structure-preserving self-maps) of <span
+class="math inline">\(X\)</span>. Being a homomorphism means it respects
+composition — for all <span class="math inline">\(g,h \in G\)</span>:
+<span class="math display">\[\rho(g)\circ\rho(h)=\rho(gh), \qquad
+\rho(e) = \operatorname{id}_X, \qquad
+\rho(g)^{-1}=\rho(g^{-1}).\]</span> (Read <span
+class="math inline">\(\rho(g)x\)</span> as "<span
+class="math inline">\(g\)</span> acting on <span
+class="math inline">\(x\)</span>"; the middle identity is <em>why</em>
+composing two actions in sequence is the same as acting by the product
+<span class="math inline">\(gh\)</span> once — the property equivariance
+is built on.)</p>
 <p>Real examples:</p>
 <ul>
 <li>the <strong>translation group</strong> <span
@@ -108,6 +120,35 @@ and <strong>bronstein2021</strong> papers.</p>
 <p>See <code>papers/group_equivariance/cohen2016_group/code/</code>
 (implemented by the reading-group build) for a working <code>p4</code>
 group convolution.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<ol type="1">
+<li>Is "add 5 to every pixel value" a group action of <span
+class="math inline">\(\mathbb{R}\)</span> on an image? Is it equivariant
+for a CNN? <em>(Yes it's a valid action (intensity-shift group); a
+linear-then-ReLU CNN layer is generally NOT equivariant to it, since
+ReLU's threshold at 0 breaks with a shift — a concrete reason
+architectures must be <em>designed</em> for the symmetry they target,
+not just any group.)</em></li>
+<li>Why must <span
+class="math inline">\(\rho(e)=\operatorname{id}_X\)</span> follow from
+the homomorphism property alone (not be assumed separately)? <em>(Set
+<span class="math inline">\(g=h=e\)</span>: <span
+class="math inline">\(\rho(e)\circ\rho(e)=\rho(e)\)</span>, so <span
+class="math inline">\(\rho(e)\)</span> is idempotent and invertible in
+<span class="math inline">\(\operatorname{Aut}(X)\)</span> — the only
+idempotent invertible map is the identity.)</em></li>
+<li><span class="math inline">\(SO(2)\)</span> acting on <span
+class="math inline">\(\mathbb{R}^2\)</span> by rotation is
+<strong>invariant</strong> for <span
+class="math inline">\(f(x)=\|x\|\)</span> but
+<strong>equivariant</strong> (not invariant) for <span
+class="math inline">\(f(x)=x\)</span> itself. What's the general
+pattern? <em>(Invariance is equivariance where the action on the output
+space <span class="math inline">\(Y\)</span> is trivial — <span
+class="math inline">\(\|x\|\)</span> is a distance, which rotation
+doesn't change, so <span class="math inline">\(\rho_Y =
+\mathrm{id}\)</span>.)</em></li>
+</ol>
 <hr />
 <p><strong>Next:</strong> <a href="04_hyperbolic_geometry.html">04 —
 Hyperbolic geometry (the Poincaré ball)</a></p>

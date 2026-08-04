@@ -95,6 +95,10 @@
 <nav class="site-nav"><a href="../">← Reading group home</a> · <a href="../#tutorial">Tutorial index</a></nav>
 <h1 id="02--riemannian-metrics--geodesics-exp--log-maps">02 — Riemannian
 metrics &amp; geodesics (exp / log maps)</h1>
+<p><strong>Underlies:</strong> <code>spd_riemannian/</code>,
+<code>hyperbolic/</code>, <code>flows_odes/</code>,
+<code>diffusion_manifolds/</code> — anything that takes a gradient step
+or measures distance on a curved space.</p>
 <h2 id="riemannian-metric">Riemannian metric</h2>
 <p>A <strong>Riemannian metric</strong> is a smoothly-varying inner
 product <span class="math display">\[g_x : T_x M \times T_x M \to
@@ -138,10 +142,10 @@ y)}.\)</span></li>
 d(x,y) = \arccos(x\cdot y).\]</span></p>
 <p><strong>Poincaré ball <span
 class="math inline">\(\mathbb{B}^n\)</span></strong> (hyperbolic,
-curvature <span class="math inline">\(-c\)</span>) <span
+curvature <span class="math inline">\(-\kappa\)</span>) <span
 class="math display">\[d(x,y) = \frac{1}{\sqrt
-c}\,\operatorname{arcosh}\!\Big(1 +
-\frac{2c\,\|x-y\|^2}{(1-c\|x\|^2)(1-c\|y\|^2)}\Big).\]</span></p>
+\kappa}\,\operatorname{arcosh}\!\Big(1 +
+\frac{2\kappa\,\|x-y\|^2}{(1-\kappa\|x\|^2)(1-\kappa\|y\|^2)}\Big).\]</span></p>
 <p><strong>SPD affine-invariant</strong> manifold <span
 class="math display">\[\operatorname{Exp}_A(V) = A^{\tfrac12}
 e^{\,A^{-\tfrac12}V A^{-\tfrac12}} A^{\tfrac12}.\]</span></p>
@@ -150,6 +154,56 @@ class="math inline">\(SO(3)\)</span></strong> <span
 class="math display">\[\exp([\omega]_\times) = I +
 \sin\theta\,[\hat\omega]_\times +
 (1-\cos\theta)\,[\hat\omega]_\times^2.\]</span></p>
+<h2
+id="curvature--what-makes-a-space-curved-in-the-first-place">Curvature —
+what makes a space "curved" in the first place</h2>
+<p>The formulas above look unrelated (trig for the sphere,
+<code>arcosh</code>/hyperbolic for the ball) but they're two instances
+of <em>one</em> number: the <strong>sectional curvature</strong> <span
+class="math inline">\(K\)</span>. For a 2-D patch, <span
+class="math inline">\(K\)</span> governs how a family of geodesics
+starting parallel at <span class="math inline">\(x\)</span> spreads
+apart, via the <strong>Jacobi equation</strong> for a normal
+geodesic-variation field <span class="math inline">\(J(t)\)</span>:
+<span class="math display">\[J&#39;&#39;(t) + K\,J(t) = 0.\]</span></p>
+<ul>
+<li><span class="math inline">\(K=0\)</span> (flat <span
+class="math inline">\(\mathbb{R}^n\)</span>): <span
+class="math inline">\(J(t) = J(0) + t J&#39;(0)\)</span> — parallel
+geodesics stay parallel forever.</li>
+<li><span class="math inline">\(K=+1\)</span> (unit sphere): <span
+class="math inline">\(J(t)=\cos(t)J(0)+\sin(t)J&#39;(0)\)</span> —
+geodesics <strong>converge</strong> (they all meet at the antipode) —
+the same <span class="math inline">\(\cos/\sin\)</span> that appears in
+<span class="math inline">\(\exp_x\)</span> above.</li>
+<li><span class="math inline">\(K=-\kappa\)</span> (Poincaré ball):
+<span class="math inline">\(J(t)=\cosh(\sqrt\kappa
+t)J(0)+\ldots\)</span> — geodesics <strong>diverge
+exponentially</strong> — the same hyperbolic functions (<span
+class="math inline">\(\operatorname{arcosh}\)</span>/<span
+class="math inline">\(\tanh\)</span>) that appear in <span
+class="math inline">\(d(x,y)\)</span> and <span
+class="math inline">\(\exp_x\)</span> above. This exponential spreading
+is <em>exactly</em> why hyperbolic space fits trees (lesson 04):
+distance between siblings grows exponentially with depth, matching a
+tree's branching factor.</li>
+</ul>
+<p>Curvature is <strong>intrinsic</strong> (Gauss's <em>Theorema
+Egregium</em>): you never need to look at how <span
+class="math inline">\(M\)</span> sits in an ambient <span
+class="math inline">\(\mathbb{R}^N\)</span> to measure it, only the
+metric <span class="math inline">\(g_x\)</span>. The cleanest way to
+<em>see</em> it without ever writing a Christoffel symbol is
+<strong>holonomy</strong>: parallel-transport a tangent vector around a
+closed loop and measure how much it rotates. Gauss–Bonnet says that
+rotation angle equals <span class="math inline">\(\int_{\text{loop}}
+K\,dA\)</span> — curvature integrated over the enclosed area. Section 7
+of <code>tutorial/code/riemannian_pytorch.py</code> transports a vector
+around a right-angle spherical triangle (area <span
+class="math inline">\(\pi/2\)</span>, unit sphere <span
+class="math inline">\(K=1\)</span>) and gets back a vector rotated by
+<strong>exactly 90°</strong> <span class="math inline">\(= K \cdot
+\text{area}\)</span> — curvature, made numerically visible.</p>
 <h2 id="why-this-matters-for-ml">Why this matters for ML</h2>
 <ul>
 <li><strong>Riemannian gradient descent</strong> (used in
@@ -168,7 +222,30 @@ networks.</li>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> tutorial/code <span class="kw">&amp;&amp;</span> <span class="ex">python</span> riemannian_pytorch.py</span></code></pre></div>
 <p>Sections 1–4 verify the exp/log round-trips for the sphere, Poincaré
-ball, SPD, and SO(3).</p>
+ball, SPD, and SO(3). Section 7 runs the holonomy/curvature demo
+above.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<ol type="1">
+<li>Why does <span class="math inline">\(K=+1\)</span> make the sphere's
+<code>exp</code> map use <span class="math inline">\(\cos/\sin\)</span>,
+while <span class="math inline">\(K=-\kappa\)</span> makes the Poincaré
+ball's use <code>arcosh</code>/<code>tanh</code>? <em>(They're both
+solutions of the same Jacobi equation <span
+class="math inline">\(J&#39;&#39;+KJ=0\)</span>; the sign of <span
+class="math inline">\(K\)</span> flips trigonometric solutions into
+hyperbolic ones — the exact same equation, analytically
+continued.)</em></li>
+<li>If you shrink a spherical triangle's enclosed area toward 0, what
+happens to its holonomy angle? <em>(It shrinks to 0 too, since holonomy
+<span class="math inline">\(= K\cdot\text{area} \to 0\)</span> —
+locally, any smooth curved space looks flat, which is exactly why
+charts/tangent spaces (lesson 01) work.)</em></li>
+<li>On a <em>flat</em> torus (<span class="math inline">\(K=0\)</span>
+everywhere), what holonomy would you expect after transporting a vector
+around any closed loop? <em>(Zero rotation — flat spaces have trivial
+holonomy regardless of the loop's shape or area, unlike the
+sphere.)</em></li>
+</ol>
 <hr />
 <p><strong>Next:</strong> <a href="03_groups_equivariance.html">03 —
 Groups &amp; equivariance</a></p>

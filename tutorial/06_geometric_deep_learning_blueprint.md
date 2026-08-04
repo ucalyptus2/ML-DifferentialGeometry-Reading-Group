@@ -30,6 +30,30 @@ That is precisely why **gauge-equivariant mesh CNNs** (de Haan et al.) and **Gau
 (Cohen et al.) talk about principal $G$-bundles, connections, and parallel transport: they are the
 architectures that handle *non-kinematic* (vector/tensor) fields correctly.
 
+## Connections & parallel transport, made concrete
+
+A **connection** is the rule that tells you how to move a tangent vector from $T_yM$ to $T_xM$
+along a path from $y$ to $x$ without "differentiating it against nothing" — plain component-wise
+subtraction is meaningless since $T_xM$ and $T_yM$ are *different* vector spaces embedded
+differently in ambient space. **Parallel transport** $\tau_{x\leftarrow y}: T_yM \to T_xM$ is the
+connection's answer: transport a vector along a curve so it changes "as little as possible" (zero
+covariant derivative along the curve). Two properties every connection has:
+
+- it's a **linear isometry** $T_yM \to T_xM$ (preserves the metric $g$: $g_x(\tau v,\tau w) =
+  g_y(v,w)$ — transporting can rotate a vector but never stretches it),
+- transporting a vector around a **closed loop** need not return it to itself — the mismatch is
+  exactly the **curvature** $K$ of lesson 02 (Gauss–Bonnet: holonomy angle $=\int K\,dA$).
+
+On the sphere this has a clean closed form. If $u$ is a unit tangent at $x$ and $\gamma(t) =
+\cos(t)x+\sin(t)u$ is the unit-speed geodesic through $x$ in direction $u$, then transporting
+$w\in T_xM$ to $\gamma(t)$ is
+$$\tau_{\gamma(t)\leftarrow x}(w) = w - \langle u,w\rangle(1-\cos t)\,u - \langle u,w\rangle \sin t\;x.$$
+`tutorial/code/riemannian_pytorch.py` (`sphere_parallel_transport`, section 7) implements exactly
+this, and chains three such transports around a spherical triangle to reproduce the 90°
+holonomy — the same demo cited in lesson 02, now tied to *why* gauge-equivariant layers need
+$\tau_{x\leftarrow y}$ at all: without it, "$f(y)$ for $y$ near $x$" lives in the wrong vector
+space to be combined with $f(x)$.
+
 ## The blueprint in equations
 
 For a $G$-structure with structure group $G$ (gauge):
@@ -58,5 +82,20 @@ gauge-equivariant conv:
 > Then figure out which *space* and which *symmetry* the authors used — the whole geometric-deep-
 > learning literature becomes a catalogue of that blueprint on different geometries.
 
+## Check yourself
+
+1. Why is a translation-equivariant CNN "1-categorical" but a gauge-equivariant mesh CNN
+   "2-categorical"? *(A CNN's features are scalars/channels at each pixel — no orientation to
+   transport, just neighbours to sum. A mesh CNN's features are vectors in each face's *own*
+   tangent plane, which differ face to face, so combining them needs $\tau_{x\leftarrow y}$
+   first.)*
+2. In the blueprint equation $(P{*}f)(x) = \sum_{y\sim x} \rho(\tau_{x\leftarrow y})f(y)$, what
+   would break if you dropped the $\rho(\tau_{x\leftarrow y})$ term and just summed $f(y)$
+   directly? *(You'd be adding vectors from different tangent spaces as if they were the same
+   space — not merely inaccurate, but not well-defined, since $T_yM \neq T_xM$ have no shared
+   coordinates without a connection to relate them.)*
+3. Pick any paper in `papers/`. Which folder's row of the blueprint table does it belong to, and
+   what plays the role of $\mathcal{P}$ and $\psi$ in its architecture?
+
 ---
-**Start the papers:** browse [`papers/`](../papers) — foundation papers first.
+**Start the papers:** browse [`papers/`](https://github.com/ucalyptus2/ML-DifferentialGeometry-Reading-Group/tree/master/papers) — foundation papers first.

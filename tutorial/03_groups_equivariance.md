@@ -3,8 +3,13 @@
 ## Groups and group actions
 
 A **group** $(G, \cdot)$ is a set with an associative operation, an identity $e$, and inverses.
-It **acts** on a set/space $X$ via
-$$\rho: G \to \operatorname{Aut}(X),\qquad (g,h)\mapsto \rho(g)\circ\rho(h)=\rho(gh).$$
+It **acts** on a set/space $X$ via a **group homomorphism**
+$$\rho: G \to \operatorname{Aut}(X)$$
+into the automorphisms (invertible structure-preserving self-maps) of $X$. Being a homomorphism
+means it respects composition — for all $g,h \in G$:
+$$\rho(g)\circ\rho(h)=\rho(gh), \qquad \rho(e) = \operatorname{id}_X, \qquad \rho(g)^{-1}=\rho(g^{-1}).$$
+(Read $\rho(g)x$ as "$g$ acting on $x$"; the middle identity is *why* composing two actions in
+sequence is the same as acting by the product $gh$ once — the property equivariance is built on.)
 
 Real examples:
 - the **translation group** $\mathbb{R}^2$ and **rotation group** $SO(2)$ acting on the plane,
@@ -47,6 +52,21 @@ This is exactly the formulation in the **bronstein2017** and **bronstein2021** p
 
 See `papers/group_equivariance/cohen2016_group/code/` (implemented by the reading-group build) for
 a working `p4` group convolution.
+
+## Check yourself
+
+1. Is "add 5 to every pixel value" a group action of $\mathbb{R}$ on an image? Is it equivariant
+   for a CNN? *(Yes it's a valid action (intensity-shift group); a linear-then-ReLU CNN layer is
+   generally NOT equivariant to it, since ReLU's threshold at 0 breaks with a shift — a concrete
+   reason architectures must be *designed* for the symmetry they target, not just any group.)*
+2. Why must $\rho(e)=\operatorname{id}_X$ follow from the homomorphism property alone (not be
+   assumed separately)? *(Set $g=h=e$: $\rho(e)\circ\rho(e)=\rho(e)$, so $\rho(e)$ is idempotent
+   and invertible in $\operatorname{Aut}(X)$ — the only idempotent invertible map is the
+   identity.)*
+3. $SO(2)$ acting on $\mathbb{R}^2$ by rotation is **invariant** for $f(x)=\|x\|$ but
+   **equivariant** (not invariant) for $f(x)=x$ itself. What's the general pattern? *(Invariance
+   is equivariance where the action on the output space $Y$ is trivial — $\|x\|$ is a distance,
+   which rotation doesn't change, so $\rho_Y = \mathrm{id}$.)*
 
 ---
 **Next:** [04 — Hyperbolic geometry (the Poincaré ball)](04_hyperbolic_geometry.md)

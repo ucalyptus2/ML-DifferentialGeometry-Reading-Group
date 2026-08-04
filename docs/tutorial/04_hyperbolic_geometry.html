@@ -103,6 +103,37 @@ the distance grows dramatically as points approach the boundary:</p>
 d(far,-far)= 6.579  # both near boundary  -&gt; hyperbolic stretching</code></pre>
 <p>Full hyperbolic implementations are in
 <code>papers/hyperbolic/*/code/</code>.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<ol type="1">
+<li>Lesson 02 showed <span class="math inline">\(K=-\kappa\)</span>
+geodesics diverge like <span class="math inline">\(\cosh(\sqrt\kappa\,
+t)\)</span>. Sketch why that forces <span
+class="math inline">\(|\mathbb{B}^n_\kappa|\)</span>'s volume within
+radius <span class="math inline">\(r\)</span> to grow like <span
+class="math inline">\(e^{\sqrt\kappa\,r}\)</span> rather than
+polynomially, as in flat space. <em>(Volume accumulates over a "sphere
+of radius <span class="math inline">\(r\)</span>" whose surface area
+itself grows like <span
+class="math inline">\(\sinh^{n-1}(\sqrt\kappa\,r)\sim
+e^{(n-1)\sqrt\kappa
+r}\)</span> — exponential, not <span
+class="math inline">\(r^{n-1}\)</span> as in <span
+class="math inline">\(\mathbb{R}^n\)</span>.)</em></li>
+<li>As <span class="math inline">\(\kappa \to 0\)</span>, what does the
+Poincaré distance formula reduce to? <em>(Ordinary Euclidean distance
+<span class="math inline">\(\|x-y\|\)</span> — hyperbolic space
+"flattens out" in the small-curvature limit, consistent with <span
+class="math inline">\(K=-\kappa\to 0\)</span>.)</em></li>
+<li>Why is Möbius addition <span
+class="math inline">\(\oplus_\kappa\)</span> <strong>not</strong>
+commutative in general (unlike ordinary vector addition), and why does
+that matter for building "hyperbolic neurons"? <em>(The ball has no
+linear structure; <span class="math inline">\(\oplus_\kappa\)</span> is
+a <em>gyrogroup</em> operation, so operation order matters —
+hyperbolic-NN layers (Ganea et al.) must fix a convention for which side
+the bias/weight acts on, unlike a Euclidean <span
+class="math inline">\(Wx+b\)</span>.)</em></li>
+</ol>
 <hr />
 <p><strong>Next:</strong> <a href="05_matrix_manifolds_spd.html">05 —
 Matrix manifolds: SPD &amp; retractions</a></p>

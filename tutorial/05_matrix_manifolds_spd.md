@@ -21,7 +21,9 @@ Computing the true exponential map can be costly. A **retraction** is any map
 $\operatorname{Retr}_x : T_xM \to M$ that is a first-order approximation of $\exp_x$:
 $$\operatorname{Retr}_x(0)=x,\qquad \frac{d}{dt}\operatorname{Retr}_x(tv)\Big|_{t=0}=v.$$
 Examples used in practice:
-- SPD: $\operatorname{Retr}_A(V) = \exp(A^{-1}V)\,A$ (or Cholesky factorizations),
+- SPD: $\operatorname{Retr}_A(V) = A\,\exp(A^{-1}V)$ (order matters here: $A$ must be on the
+  *left* — $\exp(A^{-1}V)A$ looks equally plausible but its derivative at $t=0$ works out to
+  $A^{-1}VA$, not $V$, unless $V$ commutes with $A$, so it fails the retraction condition above),
 - Sphere: $\operatorname{Retr}_x(v) = \frac{x+v}{\|x+v\|}$,
 - Grassmann: QR-decomposition based.
 
@@ -40,7 +42,27 @@ adaptive step to stay on the manifold.
 ```bash
 cd tutorial/code && python riemannian_pytorch.py   # SPD exp/log round-trip (section 3)
 ```
+Section 6 numerically checks the retraction formula above actually satisfies
+$\operatorname{Retr}_A(0)=A$ and $\frac{d}{dt}\operatorname{Retr}_A(tV)\big|_{t=0}=V$ (the check
+is what caught the left/right-multiplication order above).
+
 Full Riemannian-SGD / Adam implementations are in `papers/spd_riemannian/*/code/`.
+
+## Check yourself
+
+1. Why is the arithmetic mean $\tfrac12(A+B)$ of two SPD matrices always SPD, yet still "wrong"
+   geometrically? *(SPD is a convex cone, so the mean stays in the cone — but the affine-invariant
+   metric $g_A(X,Y)=\operatorname{tr}(A^{-1}XA^{-1}Y)$ says distances *near the cone's boundary*
+   (near-singular matrices) should be huge, which the flat mean ignores entirely — see
+   `papers/spd_riemannian/becigneul2019_radam` for why this breaks naive averaging/optimization.)*
+2. A retraction only needs to match $\exp_x$ to *first order*. What's lost by using a cheap
+   retraction instead of the true $\exp_A$, and when does it matter? *(Second-order curvature
+   information along the step — fine for small steps (most optimizer iterations), but compounds
+   error for large jumps, e.g. big learning rates or long geodesic interpolation.)*
+3. `Retr_x(v) = (x+v)/||x+v||` for the sphere — verify it satisfies $\operatorname{Retr}_x(0)=x$
+   and has the right derivative at $t=0$. *(At $t=0$: trivially $x/\|x\|=x$. Derivative:
+   $\frac{d}{dt}\frac{x+tv}{\|x+tv\|}\big|_0 = v - (v\cdot x)x = v$ since $v\cdot x=0$ for tangent
+   $v$ — matches, by the same kind of check as section 6.)*
 
 ---
 **Next:** [06 — The geometric deep learning blueprint](06_geometric_deep_learning_blueprint.md)

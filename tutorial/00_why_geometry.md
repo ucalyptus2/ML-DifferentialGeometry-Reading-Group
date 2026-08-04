@@ -1,5 +1,7 @@
 # 00 — Why geometry matters for machine learning
 
+**Underlies:** `papers/foundations/` (the Bronstein et al. surveys formalize everything below).
+
 A surprising amount of modern ML is really **geometry**. Three recurring themes tie every paper in
 this reading group together:
 
@@ -45,6 +47,16 @@ python riemannian_pytorch.py   # or: python riemannian_jax.py
 ```
 Watch the *Riemannian gradient descent* demo: even a naive optimizer that "retracts" back onto the
 sphere after every step stays on the manifold — the core trick of Riemannian optimization.
+
+## Check yourself
+
+1. Why is "linearly blending two rotation matrices" (e.g. $\tfrac12(R_1+R_2)$) usually not a
+   rotation at all? *(Averaging isn't closed on $SO(3)$ — the constraint $R^\top R=I$ is
+   quadratic, not linear/convex, so a convex combination of two solutions generally isn't a
+   solution. Lessons 01–02 give the fix: average in the tangent space via $\log$, then map back
+   with $\exp$.)*
+2. Pick one row of the "three examples" table. Which of the three recurring themes (curved data /
+   symmetry / information geometry) does it fall under, and why?
 
 ---
 **Next:** [01 — Manifolds & tangent spaces](01_manifolds_tangent_spaces.md)

@@ -95,6 +95,8 @@
 <nav class="site-nav"><a href="../">← Reading group home</a> · <a href="../#tutorial">Tutorial index</a></nav>
 <h1 id="01--manifolds--tangent-spaces">01 — Manifolds &amp; tangent
 spaces</h1>
+<p><strong>Underlies:</strong> every paper in <code>papers/</code> —
+this is the common substrate. Start here if you're new.</p>
 <h2 id="what-is-a-manifold">What is a manifold?</h2>
 <p>A <strong>smooth manifold</strong> <span
 class="math inline">\(M\)</span> is a space that <em>locally</em> looks
@@ -116,8 +118,12 @@ n} : A = A^\top \succ 0\}\)</span>,</li>
 <li>the <strong>rotation group</strong> <span
 class="math inline">\(SO(3) = \{R : R^\top R = I,\ \det R =
 1\}\)</span>,</li>
-<li>the <strong>Poincaré ball</strong> <span class="math inline">\(B^n_c
-= \{x : \|x\| &lt; 1/\sqrt{c}\}\)</span> (hyperbolic space).</li>
+<li>the <strong>Poincaré ball</strong> <span
+class="math inline">\(\mathbb{B}^n_\kappa = \{x : \|x\| &lt;
+1/\sqrt{\kappa}\}\)</span> (hyperbolic space, curvature <span
+class="math inline">\(-\kappa\)</span>; same <span
+class="math inline">\(\kappa\)</span> notation used in lessons 02 and
+04).</li>
 </ul>
 <h2 id="tangent-space">Tangent space</h2>
 <p>At each point <span class="math inline">\(x\)</span> there is a
@@ -156,6 +162,30 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(torch.dot(x, v))   <span class="co"># 0.0  -&gt; tangent to the sphere at x</span></span></code></pre></div>
 <p>Numeric demo of exp/log round-trips is in
 <code>tutorial/code/riemannian_pytorch.py</code> (section 1).</p>
+<h2 id="check-yourself">Check yourself</h2>
+<ol type="1">
+<li>Is <span class="math inline">\(v=(1,1,0)\)</span> tangent to <span
+class="math inline">\(S^2\)</span> at <span
+class="math inline">\(x=(1,0,0)\)</span>? <em>(No: <span
+class="math inline">\(v\cdot x = 1 \neq 0\)</span>. Only its component
+orthogonal to <span class="math inline">\(x\)</span>, i.e. <span
+class="math inline">\((0,1,0)\)</span>, is tangent.)</em></li>
+<li>Why is <span class="math inline">\(T_xM\)</span> a <strong>vector
+space</strong> even when <span class="math inline">\(M\)</span> itself
+is not (e.g. the sphere isn't closed under addition)? <em>(It's the
+linearization of <span class="math inline">\(M\)</span> at a single
+point via the chart <span class="math inline">\(\varphi_x\)</span> —
+charts are what make <span class="math inline">\(T_xM \cong
+\mathbb{R}^n\)</span> with ordinary vector-space structure, independent
+of <span class="math inline">\(M\)</span>'s global curvature.)</em></li>
+<li><span class="math inline">\(SO(3)\)</span> has dimension 3, but the
+matrices are <span class="math inline">\(3\times 3\)</span> (9 numbers).
+Where do the other 6 degrees of freedom go? <em>(They're pinned down by
+the constraints <span class="math inline">\(R^\top R=I,\ \det
+R=1\)</span> — 6 independent scalar equations, leaving <span
+class="math inline">\(9-6=3\)</span> free parameters, matching <span
+class="math inline">\(\dim SO(3)=3\)</span>.)</em></li>
+</ol>
 <hr />
 <p><strong>Next:</strong> <a href="02_riemannian_metric_geodesics.html">02
 — Riemannian metrics &amp; geodesics</a></p>

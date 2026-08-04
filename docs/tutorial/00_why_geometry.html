@@ -87,11 +87,16 @@
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../tutorial.css" />
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
 </head>
 <body>
 <nav class="site-nav"><a href="../">← Reading group home</a> · <a href="../#tutorial">Tutorial index</a></nav>
 <h1 id="00--why-geometry-matters-for-machine-learning">00 — Why geometry
 matters for machine learning</h1>
+<p><strong>Underlies:</strong> <code>papers/foundations/</code> (the
+Bronstein et al. surveys formalize everything below).</p>
 <p>A surprising amount of modern ML is really <strong>geometry</strong>.
 Three recurring themes tie every paper in this reading group
 together:</p>
@@ -159,6 +164,21 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="
 <p>Watch the <em>Riemannian gradient descent</em> demo: even a naive
 optimizer that "retracts" back onto the sphere after every step stays on
 the manifold — the core trick of Riemannian optimization.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<ol type="1">
+<li>Why is "linearly blending two rotation matrices" (e.g. <span
+class="math inline">\(\tfrac12(R_1+R_2)\)</span>) usually not a rotation
+at all? <em>(Averaging isn't closed on <span
+class="math inline">\(SO(3)\)</span> — the constraint <span
+class="math inline">\(R^\top R=I\)</span> is quadratic, not
+linear/convex, so a convex combination of two solutions generally isn't
+a solution. Lessons 01–02 give the fix: average in the tangent space via
+<span class="math inline">\(\log\)</span>, then map back with <span
+class="math inline">\(\exp\)</span>.)</em></li>
+<li>Pick one row of the "three examples" table. Which of the three
+recurring themes (curved data / symmetry / information geometry) does it
+fall under, and why?</li>
+</ol>
 <hr />
 <p><strong>Next:</strong> <a href="01_manifolds_tangent_spaces.html">01 —
 Manifolds &amp; tangent spaces</a></p>

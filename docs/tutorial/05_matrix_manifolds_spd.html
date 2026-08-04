@@ -127,7 +127,15 @@ class="math display">\[\operatorname{Retr}_x(0)=x,\qquad
 used in practice:</p>
 <ul>
 <li>SPD: <span class="math inline">\(\operatorname{Retr}_A(V) =
-\exp(A^{-1}V)\,A\)</span> (or Cholesky factorizations),</li>
+A\,\exp(A^{-1}V)\)</span> (order matters here: <span
+class="math inline">\(A\)</span> must be on the <em>left</em> — <span
+class="math inline">\(\exp(A^{-1}V)A\)</span> looks equally plausible
+but its derivative at <span class="math inline">\(t=0\)</span> works out
+to <span class="math inline">\(A^{-1}VA\)</span>, not <span
+class="math inline">\(V\)</span>, unless <span
+class="math inline">\(V\)</span> commutes with <span
+class="math inline">\(A\)</span>, so it fails the retraction condition
+above),</li>
 <li>Sphere: <span class="math inline">\(\operatorname{Retr}_x(v) =
 \frac{x+v}{\|x+v\|}\)</span>,</li>
 <li>Grassmann: QR-decomposition based.</li>
@@ -148,8 +156,43 @@ class="math inline">\(SO(3)\)</span>.</li>
 <h2 id="code">Code</h2>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> tutorial/code <span class="kw">&amp;&amp;</span> <span class="ex">python</span> riemannian_pytorch.py   <span class="co"># SPD exp/log round-trip (section 3)</span></span></code></pre></div>
+<p>Section 6 numerically checks the retraction formula above actually
+satisfies <span
+class="math inline">\(\operatorname{Retr}_A(0)=A\)</span> and <span
+class="math inline">\(\frac{d}{dt}\operatorname{Retr}_A(tV)\big|_{t=0}=V\)</span>
+(the check is what caught the left/right-multiplication order
+above).</p>
 <p>Full Riemannian-SGD / Adam implementations are in
 <code>papers/spd_riemannian/*/code/</code>.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<ol type="1">
+<li>Why is the arithmetic mean <span
+class="math inline">\(\tfrac12(A+B)\)</span> of two SPD matrices always
+SPD, yet still "wrong" geometrically? <em>(SPD is a convex cone, so the
+mean stays in the cone — but the affine-invariant metric <span
+class="math inline">\(g_A(X,Y)=\operatorname{tr}(A^{-1}XA^{-1}Y)\)</span>
+says distances <em>near the cone's boundary</em> (near-singular
+matrices) should be huge, which the flat mean ignores entirely — see
+<code>papers/spd_riemannian/becigneul2019_radam</code> for why this
+breaks naive averaging/optimization.)</em></li>
+<li>A retraction only needs to match <span
+class="math inline">\(\exp_x\)</span> to <em>first order</em>. What's
+lost by using a cheap retraction instead of the true <span
+class="math inline">\(\exp_A\)</span>, and when does it matter?
+<em>(Second-order curvature information along the step — fine for small
+steps (most optimizer iterations), but compounds error for large jumps,
+e.g. big learning rates or long geodesic interpolation.)</em></li>
+<li><code>Retr_x(v) = (x+v)/||x+v||</code> for the sphere — verify it
+satisfies <span
+class="math inline">\(\operatorname{Retr}_x(0)=x\)</span> and has the
+right derivative at <span class="math inline">\(t=0\)</span>. <em>(At
+<span class="math inline">\(t=0\)</span>: trivially <span
+class="math inline">\(x/\|x\|=x\)</span>. Derivative: <span
+class="math inline">\(\frac{d}{dt}\frac{x+tv}{\|x+tv\|}\big|_0 = v -
+(v\cdot x)x = v\)</span> since <span class="math inline">\(v\cdot
+x=0\)</span> for tangent <span class="math inline">\(v\)</span> —
+matches, by the same kind of check as section 6.)</em></li>
+</ol>
 <hr />
 <p><strong>Next:</strong> <a
 href="06_geometric_deep_learning_blueprint.html">06 — The geometric deep

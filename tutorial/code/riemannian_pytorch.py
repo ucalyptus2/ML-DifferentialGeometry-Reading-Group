@@ -7,7 +7,8 @@ The geometric core that powers most papers in this reading group, in PyTorch:
   * Exponential / Logarithmic maps (sphere, Poincare ball, SPD cone, rotation group)
   * Geodesics
   * Riemannian gradient descent (retraction)
-  * A tiny gauge-style / parallel-transport illustration
+  * SPD retraction correctness check (first-order condition on Retr_A)
+  * Sphere parallel transport + a holonomy demo that makes curvature numerically visible
 
 Run:  python riemannian_pytorch.py
 """
@@ -80,6 +81,15 @@ def expm_skew(w):
     return torch.eye(3) + torch.sin(theta) * K + (1 - torch.cos(theta)) * (K @ K)
 
 
+def sphere_parallel_transport(x, u, t, w):
+    """Parallel-transport tangent vector w at x along the unit-speed sphere geodesic
+    exp_x(s*u), s in [0,t] (u a unit tangent at x, i.e. u.x=0, ||u||=1), to exp_x(t*u).
+    Closed form: the u-component of w co-rotates with the geodesic's own velocity field
+    (which is itself parallel), the component orthogonal to span(x,u) is untouched."""
+    a = torch.dot(u, w)
+    return w - a * (1 - torch.cos(t)) * u - a * torch.sin(t) * x
+
+
 def euclid_gd(f, x0, lr=0.1, iters=50):
     """Baseline: ordinary gradient descent (kept for comparison)."""
 
@@ -132,6 +142,43 @@ def main():
         x = x - lr * g                               # step in tangent space
         x = x / torch.linalg.norm(x)                 # retraction back onto the sphere
     print("   converged x =", x.detach().numpy().round(4), " (should be ~ (1,0,0))")
+
+    print("\n== 6. SPD retraction is a genuine first-order retraction of Exp ==")
+    A64 = torch.tensor([[1.0, 0.2], [0.2, 1.2]], dtype=torch.float64)
+    V64 = torch.tensor([[0.05, 0.02], [0.02, -0.03]], dtype=torch.float64)
+
+    def spd_retr(A, V, t):
+        # NOTE: order matters -- A @ exp(A^{-1}V), not exp(A^{-1}V) @ A (the latter's
+        # derivative at t=0 is A^{-1}VA != V unless V commutes with A).
+        return A @ torch.matrix_exp(t * torch.linalg.solve(A, V))
+
+    r0 = spd_retr(A64, V64, torch.tensor(0.0, dtype=torch.float64))
+    eps = 1e-5
+    deriv = (spd_retr(A64, V64, torch.tensor(eps, dtype=torch.float64))
+             - spd_retr(A64, V64, torch.tensor(-eps, dtype=torch.float64))) / (2 * eps)
+    print("   Retr_A(0) == A:            ", torch.allclose(r0, A64, atol=1e-8))
+    print("   d/dt Retr_A(tV)|_0 == V:   ", torch.allclose(deriv, V64, atol=1e-5))
+    assert torch.allclose(r0, A64, atol=1e-8) and torch.allclose(deriv, V64, atol=1e-5)
+
+    print("\n== 7. Curvature made visible: holonomy around a spherical triangle ==")
+    # Parallel-transport a tangent vector around a right-angle spherical triangle (an
+    # octant of the unit sphere: N -> A -> B -> N, each leg a quarter great-circle,
+    # enclosed area = pi/2). Gauss-Bonnet predicts the vector comes back *rotated* by
+    # holonomy angle = integral of curvature over the enclosed area = K * area = 1 * pi/2
+    # = 90 degrees on the unit sphere (K=1). This is curvature made numerically visible,
+    # without ever writing down a Christoffel symbol.
+    N = torch.tensor([0.0, 0.0, 1.0])
+    Apt = torch.tensor([1.0, 0.0, 0.0])
+    Bpt = torch.tensor([0.0, 1.0, 0.0])
+    half_pi = torch.tensor(math.pi / 2)
+    w = torch.tensor([1.0, 0.0, 0.0])                                    # tangent at N
+    w = sphere_parallel_transport(N, torch.tensor([1.0, 0.0, 0.0]), half_pi, w)    # N -> A
+    w = sphere_parallel_transport(Apt, torch.tensor([0.0, 1.0, 0.0]), half_pi, w)  # A -> B
+    w = sphere_parallel_transport(Bpt, torch.tensor([0.0, 0.0, 1.0]), half_pi, w)  # B -> N
+    angle = torch.acos(torch.clamp(torch.dot(w, torch.tensor([1.0, 0.0, 0.0])), -1.0, 1.0))
+    print(f"   holonomy rotation after the loop: {math.degrees(angle.item()):.2f} deg"
+          "  (Gauss-Bonnet: K * area = 1 * pi/2 = 90 deg)")
+    assert abs(angle.item() - math.pi / 2) < 1e-3, "holonomy must equal K * enclosed area"
 
 
 if __name__ == "__main__":

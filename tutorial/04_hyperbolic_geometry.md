@@ -48,5 +48,21 @@ d(far,-far)= 6.579  # both near boundary  -> hyperbolic stretching
 ```
 Full hyperbolic implementations are in `papers/hyperbolic/*/code/`.
 
+## Check yourself
+
+1. Lesson 02 showed $K=-\kappa$ geodesics diverge like $\cosh(\sqrt\kappa\, t)$. Sketch why that
+   forces $|\mathbb{B}^n_\kappa|$'s volume within radius $r$ to grow like $e^{\sqrt\kappa\,r}$
+   rather than polynomially, as in flat space. *(Volume accumulates over a "sphere of radius
+   $r$" whose surface area itself grows like $\sinh^{n-1}(\sqrt\kappa\,r)\sim e^{(n-1)\sqrt\kappa
+   r}$ — exponential, not $r^{n-1}$ as in $\mathbb{R}^n$.)*
+2. As $\kappa \to 0$, what does the Poincaré distance formula reduce to? *(Ordinary Euclidean
+   distance $\|x-y\|$ — hyperbolic space "flattens out" in the small-curvature limit, consistent
+   with $K=-\kappa\to 0$.)*
+3. Why is Möbius addition $\oplus_\kappa$ **not** commutative in general (unlike ordinary vector
+   addition), and why does that matter for building "hyperbolic neurons"? *(The ball has no
+   linear structure; $\oplus_\kappa$ is a *gyrogroup* operation, so operation order matters —
+   hyperbolic-NN layers (Ganea et al.) must fix a convention for which side the bias/weight acts
+   on, unlike a Euclidean $Wx+b$.)*
+
 ---
 **Next:** [05 — Matrix manifolds: SPD & retractions](05_matrix_manifolds_spd.md)
